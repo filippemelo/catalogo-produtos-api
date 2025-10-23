@@ -1,14 +1,20 @@
-var builder = WebApplication.CreateBuilder(args);
+using ApiCatalogo.Context;
+using Microsoft.EntityFrameworkCore;
 
-// Add services to the container.
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<AppDbContext>((optionsActions) =>
+{
+    var connString = builder.Configuration.GetConnectionString("DefaultConnection");
+    optionsActions.UseSqlServer(connString);
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
