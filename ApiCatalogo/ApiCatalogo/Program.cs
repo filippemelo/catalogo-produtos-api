@@ -1,5 +1,6 @@
 using ApiCatalogo.Context;
 using ApiCatalogo.Extensions;
+using ApiCatalogo.Filters;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -16,6 +17,8 @@ builder.Services.AddDbContext<AppDbContext>((optionsActions) =>
     var connString = builder.Configuration.GetConnectionString("DefaultConnection");
     optionsActions.UseSqlServer(connString);
 });
+
+builder.Services.AddScoped<ApiLoggingFilter>();
 
 var app = builder.Build();
 
