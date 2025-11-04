@@ -11,16 +11,21 @@ namespace ApiCatalogo.Controllers;
 public class CategoriasController : Controller
 {
     private readonly AppDbContext _context;
+    private readonly ILogger _logger;
 
-    public CategoriasController(AppDbContext context)
+    public CategoriasController(AppDbContext context, ILogger logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [HttpGet]
     [ServiceFilter(typeof(ApiLoggingFilter))]
     public async Task<ActionResult<IEnumerable<Categoria>>> Get()
     {
+
+        _logger.LogInformation(" ===================== GET api/categorias ========================");
+
         try
         {
             var categorias = await _context.Categorias.AsNoTracking().ToListAsync();
@@ -41,6 +46,8 @@ public class CategoriasController : Controller
     [HttpGet("{id:int}", Name = "ObterCategoria")]
     public async Task<ActionResult<Categoria>> Get(int id)
     {
+        _logger.LogInformation($" ===================== GET api/categorias/id = {id} ========================");
+
         try
         {
             var categoria = await _context.Categorias.AsNoTracking().FirstOrDefaultAsync(x => x.CategoriaId == id);
@@ -61,6 +68,8 @@ public class CategoriasController : Controller
     [HttpGet("produtos")]
     public async Task<ActionResult<IEnumerable<Categoria>>> GetCategoriaProdutos()
     {
+        _logger.LogInformation(" ===================== GET api/categorias/produtos ========================");
+
         try
         {
             return await _context.Categorias.AsNoTracking().Include(x => x.Produtos).ToListAsync();
