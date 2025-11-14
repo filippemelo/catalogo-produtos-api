@@ -26,20 +26,12 @@ public class CategoriasController : Controller
 
         _logger.LogInformation(" ===================== GET api/categorias ========================");
 
-        try
-        {
-            var categorias = await _context.Categorias.AsNoTracking().ToListAsync();
+        var categorias = await _context.Categorias.AsNoTracking().ToListAsync();
 
-            if (categorias is null)
-                return NotFound("Categorias não encontradas.");
+        if (categorias is null)
+            return NotFound("Categorias não encontradas.");
 
-            return categorias;
-        }
-        catch (Exception)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                "Ocorreu um problema ao tratar a sua solicitação.");
-        }
+        return categorias;
         
     }
 
@@ -48,20 +40,12 @@ public class CategoriasController : Controller
     {
         _logger.LogInformation($" ===================== GET api/categorias/id = {id} ========================");
 
-        try
-        {
-            var categoria = await _context.Categorias.AsNoTracking().FirstOrDefaultAsync(x => x.CategoriaId == id);
+        var categoria = await _context.Categorias.AsNoTracking().FirstOrDefaultAsync(x => x.CategoriaId == id);
 
-            if (categoria is null)
-                return NotFound("Categoria não encontrada");
+        if (categoria is null)
+            return NotFound("Categoria não encontrada");
 
-            return Ok(categoria);
-        }
-        catch (Exception)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                "Ocorreu um problema ao tratar a sua solicitação.");
-        }
+        return Ok(categoria);
         
     }
 
@@ -70,79 +54,49 @@ public class CategoriasController : Controller
     {
         _logger.LogInformation(" ===================== GET api/categorias/produtos ========================");
 
-        try
-        {
-            return await _context.Categorias.AsNoTracking().Include(x => x.Produtos).ToListAsync();
-        }
-        catch (Exception)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                "Ocorreu um problema ao tratar a sua solicitação.");
-        }
+        return await _context.Categorias.AsNoTracking().Include(x => x.Produtos).ToListAsync();
+        
     }
 
     [HttpPost]
     public async Task<ActionResult<Categoria>> Post(Categoria categoria)
     {
-        try
-        {
-            if (categoria is null)
-                return BadRequest("Dados inválidos!");
 
-            await _context.Categorias.AddAsync(categoria);
-            await _context.SaveChangesAsync();
+        if (categoria is null)
+            return BadRequest("Dados inválidos!");
 
-            return new CreatedAtRouteResult("ObterCategoria", new { id = categoria.CategoriaId }, categoria);
-        }
-        catch (Exception)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                "Ocorreu um problema ao tratar a sua solicitação.");
-        }
+        await _context.Categorias.AddAsync(categoria);
+        await _context.SaveChangesAsync();
+
+        return new CreatedAtRouteResult("ObterCategoria", new { id = categoria.CategoriaId }, categoria);
         
     }
 
     [HttpPut("{id:int}")]
     public async Task<ActionResult<Categoria>> Put(int id, Categoria categoria)
     {
-        try
-        {
-            if (id != categoria.CategoriaId)
-                return BadRequest("Dados inválidos!");
+        if (id != categoria.CategoriaId)
+            return BadRequest("Dados inválidos!");
 
-            _context.Entry(categoria).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+        _context.Entry(categoria).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
 
-            return Ok(categoria);
-        }
-        catch (Exception)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                "Ocorreu um problema ao tratar a sua solicitação.");
-        }
-        
+        return Ok(categoria);
+       
     }
 
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<Categoria>> Delete(int id)
     {
-        try
-        {
-            var categoria = await _context.Categorias.FirstOrDefaultAsync(x => x.CategoriaId == id);
+        var categoria = await _context.Categorias.FirstOrDefaultAsync(x => x.CategoriaId == id);
 
-            if (categoria is null)
-                return NotFound("Categoria não encontrada.");
+        if (categoria is null)
+            return NotFound("Categoria não encontrada.");
 
-            _context.Categorias.Remove(categoria);
-            await _context.SaveChangesAsync();
+        _context.Categorias.Remove(categoria);
+        await _context.SaveChangesAsync();
 
-            return Ok(categoria);
-        }
-        catch (Exception)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                "Ocorreu um problema ao tratar a sua solicitação.");
-        }
+        return Ok(categoria);
         
     }
 

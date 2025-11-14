@@ -19,100 +19,60 @@ public class ProdutosController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Produto>?>> Get()
     {
-        try
-        {
-            var produtos = await _context.Produtos.AsNoTracking().ToListAsync();
+        var produtos = await _context.Produtos.AsNoTracking().ToListAsync();
 
-            if (produtos is null)
-                return NotFound("Produtos não encontrados.");
+        if (produtos is null)
+            return NotFound("Produtos não encontrados.");
 
-            return produtos;
-        }
-        catch (Exception)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                "Ocorreu um problema ao tratar a sua solicitação.");
-        }
+        return produtos;
     }
 
     [HttpGet("{id:int:min(1)}", Name = "ObterProduto")]
     public async Task<ActionResult<Produto?>> Get(int id)
     {
-        try
-        {
-            var produto = await _context.Produtos.AsNoTracking().FirstOrDefaultAsync(x => x.ProdutoId == id);
-            if (produto is null)
-                return NotFound("Produto não encontrado.");
+        var produto = await _context.Produtos.AsNoTracking().FirstOrDefaultAsync(x => x.ProdutoId == id);
+        if (produto is null)
+            return NotFound("Produto não encontrado.");
 
-            return Ok(produto);
-        }
-        catch (Exception)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                "Ocorreu um problema ao tratar a sua solicitação.");
-        }
+        return Ok(produto);
     }
 
     [HttpPost]
     public async Task<ActionResult> Post(Produto produto)
     {
-        try
-        {
-            if (produto is null)
-                return BadRequest();
+        if (produto is null)
+            return BadRequest();
 
-            await _context.Produtos.AddAsync(produto);
-            await _context.SaveChangesAsync();
+        await _context.Produtos.AddAsync(produto);
+        await _context.SaveChangesAsync();
 
-            return new CreatedAtRouteResult("ObterProduto", new { id = produto.ProdutoId }, produto);
-        }
-        catch (Exception)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                "Ocorreu um problema ao tratar a sua solicitação.");
-        }
+        return new CreatedAtRouteResult("ObterProduto", new { id = produto.ProdutoId }, produto);
     }
 
     [HttpPut("{id:int}")]
     public async Task<ActionResult> Put(int id, Produto produto)
     {
-        try
-        {
-            if (id != produto.ProdutoId)
-                return BadRequest();
+        if (id != produto.ProdutoId)
+            return BadRequest();
 
-            _context.Entry(produto).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+        _context.Entry(produto).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
 
-            return Ok(produto);
-        }
-        catch (Exception)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                "Ocorreu um problema ao tratar a sua solicitação.");
-        }
+        return Ok(produto);
     }
 
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        try
-        {
-            var produto = await _context.Produtos.FirstOrDefaultAsync(x => x.ProdutoId == id);
+        var produto = await _context.Produtos.FirstOrDefaultAsync(x => x.ProdutoId == id);
 
-            if (produto is null)
-                return NotFound("Produto não encontrado.");
+        if (produto is null)
+            return NotFound("Produto não encontrado.");
 
-            _context.Produtos.Remove(produto);
-            _context.SaveChanges();
+        _context.Produtos.Remove(produto);
+        _context.SaveChanges();
 
-            return Ok(produto);
-        }
-        catch (Exception)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                "Ocorreu um problema ao tratar a sua solicitação.");
-        }
-        
+        return Ok(produto);
+
     }
 }
